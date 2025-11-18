@@ -73,7 +73,8 @@ async function fetchAndParse(url) {
 
 document.addEventListener('DOMContentLoaded', async () => {
   const url = "/assets/unihan.csv";
-  database = await fetchAndParse(url);
+  alert(window.location.href);
+  database = await fetchAndParse(window.location.href + url);
   for (let i = 0; i < 10; i++) {
     console.log(database[i]);
   }
