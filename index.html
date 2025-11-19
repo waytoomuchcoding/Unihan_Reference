@@ -1,112 +1,15 @@
-<html>
-<body>
-<head>
-    <style>
-    .quiz-section {
-        border: 2px solid #000;
-        padding: 20px;
-        max-width: 400px;
-        margin: 20px auto;
-        text-align: center;
-    }
-    .quiz-char {
-        font-size: 48px;
-        margin-bottom: 20px;
-    }
-    .quiz-answer {
-        font-size: 24px;
-        margin-bottom: 20px;
-        opacity: 0;
-    }
-    .quiz-answer:hover {
-        opacity: 1;
-    }
-    .next-char {
-        padding: 10px 20px;
-        font-size: 16px;
-        cursor: pointer;
-    }
-    </style>
-</head>
-<div class="quiz-section">
-<div class="quiz-char"></div>
-<div class="quiz-answer"></div>
-<button class="next-char">Next Char</button>
-</div>
-<script>
-
-function parseUnihanData(text) {
-    const lines = text.split('\n');
-    const data = {};
-    lines.forEach(line => {
-        if (line.startsWith('#') || line.trim() === '') return;
-
-        const values = line.split('|');
-        data[values[18]] = {
-            character: values[0],
-            def: values[2],
-            pron: values[9],
-            sijiao: values[18],
-        };
-    });
-    return Object.values(data);
-}
-
-async function fetchAndParse(url) {
-    try {
-        const response = await fetch(url);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const text = await response.text();
-        
-        const parsedData = parseUnihanData(text);
-
-        return parsedData;
-
-    } catch (error) {
-        console.error('Error fetching or parsing data:', error);
-    }
-}
-
-document.addEventListener('DOMContentLoaded', async () => {
-  const url = "/assets/unihan.csv";
-  alert(window.location.href);
-  database = await fetchAndParse(window.location.href + url);
-  for (let i = 0; i < 10; i++) {
-    console.log(database[i]);
-  }
-
-  document.querySelector('.next-char').addEventListener('click', () => {
-    let entry = null;
-    do {
-      let randomIndex = Math.floor(Math.random() * database.length);
-      entry = database[randomIndex];
-    } while (!entry.sijiao);
-    document.querySelector('.quiz-char').textContent = entry.character;
-    document.querySelector('.quiz-answer').textContent = entry.sijiao || 'No reading available';
-  });
-});
-
-document.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') {
-    const results = database.filter(entry => 
-      entry.character.includes(searchQuery) ||
-      Object.values(entry).some(value => 
-        typeof value === 'string' && value.includes(searchQuery)
-      )
-    );
-    console.log(`Search results for "${searchQuery}":`, results);
-    searchQuery = '';
-  } else if (event.key.length === 1) {
-    searchQuery += event.key;
-  } else if (event.key === 'Backspace') {
-    searchQuery = searchQuery.slice(0, -1);
-  }
-});
-</script>
-
-</body>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/Unihan_Reference/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>sijiao_lookup</title>
+    <script type="module" crossorigin src="/Unihan_Reference/assets/index-CceqnQ2G.js"></script>
+    <link rel="stylesheet" crossorigin href="/Unihan_Reference/assets/index-DQ3P1g1z.css">
+  </head>
+  <body class="w-full">
+    <div id="root" class="w-full"></div>
+  </body>
 </html>
